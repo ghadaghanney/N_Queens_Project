@@ -1,15 +1,10 @@
 from tkinter import *
 
-#variables globales:
-echiquier=[] #tableau NxN
-position_reine=[] #Les positions des N reines
-sol=[]
+echiquier=[] 
+position_reine=[] 
+solution=[]
 
 
-
-#Initialisation :
-#On fixe la taille de l'echiquier (tableau NxN) et on l'initialise par 0
-#On fixe la taille du tableau contenant les positions des N reines et on l'initialise par 0
 def init_echiquier(n):
     for i in range(0,n):
         position_reine.append(0)
@@ -28,7 +23,6 @@ def afficher_solution():
         
     
 # Placer les reines sur l'echiquier
-#On remplit toutes les cases vides de l'echiquier par 0, et les cases contenant les reines par 1
 def placer_reine(n):
     for i in range(0,n): 
         for k in range(0,n):
@@ -51,26 +45,25 @@ def Valider(L ,co):
 
 
 def placer_toute_reines(col,n):
-    global k,x,t,sol #pour compter les solutions
+    global k,x,t,solution #pour compter les solutions
     if(col==n):        
-        sol=sol+position_reine
+        solution=solution+position_reine
         print(position_reine)
         x=int(k.get())+1
         k.set(x)
     else :
-#pour une colonne donne, on teste si l'une des ligne est valide pour y poser la reine,
-#si aucune ligne n'est valide, on retourne a la colonne precedante
-#et change la position de la reine qui s'y trouve
-     for i in range(0,n): #la colonne est fixe, et on teste pour toutes les lignes
-        if(Valider(i,col)): #si la case est valide (colonne=r, ligne=i) on y place une reine
+#pour une colonne donne, on teste si l'une des ligne est valide pour placer la reine,
+
+     for i in range(0,n): 
+        if(Valider(i,col)): 
             position_reine[col]=i 
             placer_toute_reines(col+1,n) 
     
   
     
 def calculer(n):
-    global k,clic,position_reine,sol
-    sol=[]
+    global k,clic,position_reine,solution
+    solution=[]
     clic.set(0)
     position_reine=[]
     k.set(0)
@@ -82,7 +75,7 @@ def calculer(n):
 def voir(n):
     global clic,k
     cli=int(clic.get())-1
-    d=600//n
+    d=400//n
     for i in range(n):
         col=list(range(n))
         for j in range(n):
@@ -92,7 +85,7 @@ def voir(n):
             col[i][j]=c.create_rectangle(lo,ha,lo+d,ha+d,outline='white',fill='blue')
                            
     for i in range (n*cli,n*cli+n):
-            c.create_oval(sol[i]*d+1,(i-n*cli)*d+1,sol[i]*d+d-1,(i-n*cli)*d+d-1,fill='white')
+            c.create_oval(solution[i]*d+1,(i-n*cli)*d+1,solution[i]*d+d-1,(i-n*cli)*d+d-1,fill='white')
     if cli+1<int(k.get()):
         cli=cli+1
         clic.set(cli+1)
@@ -102,15 +95,15 @@ def voir(n):
                            
 #debut programme :
 x=0
-sol=[]
+solution=[]
 #cherche_solution(0)
 f=Tk()
 clic=StringVar()
 clic.set(1) 
 k=StringVar()
 k.set(0)
-c = Canvas(f,bg='white',height=600,width=600)
-c.pack(side=LEFT)
+c = Canvas(f,bg='white',height=500,width=500)
+c.pack(side=TOP)
 spin=Spinbox(f, values=(4,5,6,7,8,9,10,11), width=4)
 spin.config( font="sans 12", justify="center")
 spin.pack()
@@ -121,10 +114,9 @@ ll.pack()
 l=Label(f,textvariable=k)
 l.pack()
 Label(f).pack()
-bb=Button(f,text="Clicker pour voir les solutions",command=lambda:voir(int(spin.get())))
+bb=Button(f,text="Voulez-vous voir la solution ? ",command=lambda:voir(int(spin.get())))
 bb.pack()
 lll=Label(f,textvariable=clic)
 lll.pack()
 f.mainloop()
 print('Nombre de solutions:',k.get())
-#print('Résultat:', sol)
